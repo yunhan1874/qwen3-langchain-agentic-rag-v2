@@ -144,6 +144,8 @@ RAG 的九项升级保持原项目设计。公开展示版没有提交原始医�
 python scripts/benchmark_latency.py --url http://127.0.0.1:17860 --runs 3
 ```
 
+真实训练模型的 vLLM 后端对比见 [vLLM 测试报告](docs/VLLM_BENCHMARK_RESULTS.md)。固定生成相同 128 token 的测试中，Transformers 中位耗时 3.84 秒，vLLM 为 0.76 秒；当前前端默认后端仍为 Transformers。
+
 ## 安装与运行
 
 先按机器的 CUDA/CPU 环境安装合适的 PyTorch，然后安装项目：
