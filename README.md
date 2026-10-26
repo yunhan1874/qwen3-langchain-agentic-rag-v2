@@ -218,4 +218,3 @@ PYTHONPATH=. python3 -m unittest discover -s tests -v
 - 当前 Faithfulness 是词项覆盖近似，不是 NLI 或 LLM Judge。
 - Citation 保证编号合法和来源可追踪，不等同于事实级蕴含。
 - Demo 模式使用 Hashing Embedder、规则改写和合成语料，仅展示流程与可观察性。
-

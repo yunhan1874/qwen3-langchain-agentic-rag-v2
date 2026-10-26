@@ -1,0 +1,1 @@
+{"query":"高血压如何治疗？","relevant_ids":["从 rag_v2_index/chunks.jsonl 填入对应 chunk_id"],"filters":{"document_type":"medical_qa"}}

@@ -1,0 +1,7 @@
+accelerate>=1.0
+chromadb>=1.0,<2
+langchain-core>=0.3,<2
+langchain-huggingface>=0.1,<2
+sentence-transformers>=3.4,<4
+transformers>=4.51,<5
+typing-extensions>=4.12
