@@ -144,7 +144,34 @@ RAG 的九项升级保持原项目设计。公开展示版没有提交原始医�
 python scripts/benchmark_latency.py --url http://127.0.0.1:17860 --runs 3
 ```
 
-真实训练模型的 vLLM 后端对比见 [vLLM 测试报告](docs/VLLM_BENCHMARK_RESULTS.md)。固定生成相同 128 token 的测试中，Transformers 中位耗时 3.84 秒，vLLM 为 0.76 秒；当前前端默认后端仍为 Transformers。
+真实训练模型的 vLLM 后端对比见 [vLLM 测试报告](docs/VLLM_BENCHMARK_RESULTS.md)。固定生成相同 128 token 的测试中，Transformers 中位耗时 3.84 秒，vLLM 为 0.76 秒。服务器展示前端已切换到 vLLM；新安装默认使用 Transformers，可通过环境变量选择后端。
+
+### 使用 vLLM 后端
+
+在独立的 vLLM 环境启动已训练检查点，服务只监听 localhost：
+
+```bash
+python -m vllm.entrypoints.openai.api_server \
+  --model /path/to/checkpoint-1082 --served-model-name qwen3-medical \
+  --host 127.0.0.1 --port 8001 --dtype bfloat16 \
+  --max-model-len 4096 --max-num-seqs 4 --max-num-batched-tokens 4096 \
+  --gpu-memory-utilization 0.5 --no-enable-prefix-caching \
+  --disable-log-requests --seed 0 \
+  --compilation-config '{"cudagraph_capture_sizes":[1,2,4]}'
+```
+
+然后在项目环境中保留原有语料、Embedding、Reranker 和索引配置，导出以下变量并启动前端：
+
+```bash
+export RAG_LLM_BACKEND=vllm
+export RAG_VLLM_BASE_URL=http://127.0.0.1:8001/v1
+export RAG_VLLM_MODEL=qwen3-medical
+python -m rag_v2.webapp --default-real
+```
+
+客户端使用 raw completion 保留既有提示词格式和采样设置（temperature=0.1、top_p=0.95、top_k=20）。回答最多新增 256 token，改写最多新增 96 token，复用同一个 vLLM 服务。前端不再加载额外的 Qwen 权重；BGE 与 Chroma 仍由项目进程运行。启动时会校验服务中的模型名，服务错误会明确显示，不会自动回退加载 Transformers。
+
+页面状态显示实际后端 `vLLM` 或 `Transformers`。如需回退，在重启前端前设置 `RAG_LLM_BACKEND=transformers`；确认不再有客户端使用 vLLM 后，可停止 vLLM 服务以释放显存。
 
 ## 安装与运行
 
@@ -236,6 +263,10 @@ PYTHONPATH=. python3 -m unittest discover -s tests -v
 | `RAG_RERANKER_MODEL` | CrossEncoder Reranker | `BAAI/bge-reranker-base` |
 | `RAG_REWRITE_MAX_NEW_TOKENS` | 改写最多新增 token | `96` |
 | `RAG_ANSWER_MAX_NEW_TOKENS` | 回答最多新增 token | `256` |
+| `RAG_LLM_BACKEND` | 推理后端：transformers / vllm | `transformers` |
+| `RAG_VLLM_BASE_URL` | vLLM 本机 API 地址 | `http://127.0.0.1:8001/v1` |
+| `RAG_VLLM_MODEL` | 与服务 served-model-name 一致 | `qwen3-medical` |
+| `RAG_VLLM_API_KEY` | 可选推理服务认证密钥 | 空 |
 | `SWANLAB_API_KEY` | 可选训练日志密钥 | 空 |
 | `GRADIO_SERVER_NAME` | Web UI 监听地址 | `127.0.0.1` |
 | `GRADIO_SERVER_PORT` | Web UI 端口 | `7860` |

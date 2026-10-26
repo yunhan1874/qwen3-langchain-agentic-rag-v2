@@ -15,6 +15,18 @@ class RAGConfig:
     model_path: str = field(
         default_factory=lambda: os.getenv("QWEN_MODEL_PATH", "Qwen/Qwen3-1.7B")
     )
+    llm_backend: str = field(
+        default_factory=lambda: os.getenv("RAG_LLM_BACKEND", "transformers").strip().lower()
+    )
+    vllm_base_url: str = field(
+        default_factory=lambda: os.getenv("RAG_VLLM_BASE_URL", "http://127.0.0.1:8001/v1")
+    )
+    vllm_model: str = field(
+        default_factory=lambda: os.getenv("RAG_VLLM_MODEL", "qwen3-medical")
+    )
+    vllm_api_key: str = field(
+        default_factory=lambda: os.getenv("RAG_VLLM_API_KEY", ""), repr=False
+    )
     docs_path: Path = field(
         default_factory=lambda: Path(
             os.getenv("RAG_DOCS_PATH", str(PROJECT_ROOT / "data" / "docs.txt"))
@@ -57,6 +69,16 @@ class RAGConfig:
     max_agent_steps: int = 3
 
     def validate(self) -> None:
+        if self.llm_backend not in {"transformers", "vllm"}:
+            raise ValueError("RAG_LLM_BACKEND 必须为 transformers 或 vllm")
+        if self.llm_backend == "vllm":
+            from urllib.parse import urlsplit
+
+            url = urlsplit(self.vllm_base_url)
+            if url.scheme not in {"http", "https"} or not url.netloc:
+                raise ValueError("RAG_VLLM_BASE_URL 必须为 HTTP(S) 地址")
+            if not self.vllm_model.strip():
+                raise ValueError("RAG_VLLM_MODEL 不能为空")
         positive = {
             "max_length": self.max_length,
             "rewrite_max_new_tokens": self.rewrite_max_new_tokens,

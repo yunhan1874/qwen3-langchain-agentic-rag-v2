@@ -19,6 +19,18 @@ from .semantic_chunking import SemanticChunker, load_chunks, load_source_documen
 
 
 def _build_llm(config: RAGConfig) -> Any:
+    if config.llm_backend == "vllm":
+        from .vllm_client import VLLMCompletionLLM
+
+        llm = VLLMCompletionLLM(
+            base_url=config.vllm_base_url,
+            model=config.vllm_model,
+            max_new_tokens=config.answer_max_new_tokens,
+            api_key=config.vllm_api_key,
+        )
+        llm.check_ready()
+        print(f"使用 vLLM 推理服务，模型：{config.vllm_model}")
+        return llm
     try:
         from langchain_huggingface import HuggingFacePipeline
         from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline

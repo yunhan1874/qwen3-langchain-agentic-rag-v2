@@ -48,7 +48,8 @@ def handle_request(
         if is_demo:
             result = _demo_engine().run(query, filters)
         else:
-            result = _real_rag().invoke(query, filters)
+            rag = _real_rag()
+            result = rag.invoke(query, filters)
         payload = result_payload(result, demo_mode=is_demo)
         query_view = (
             f"**Original Query**\n\n{payload['original_query']}\n\n"
@@ -62,6 +63,9 @@ def handle_request(
             f"**置信度：** `{payload['confidence']:.4f}`  "
             f"**模式：** `{'DEMO / SYNTHETIC' if is_demo else 'REAL'}`"
         )
+        if not is_demo:
+            backend = "vLLM" if rag.engine.config.llm_backend == "vllm" else "Transformers"
+            status += f"  **推理后端：** `{backend}`"
         return (
             payload["answer_markdown"],
             payload["citations"],
