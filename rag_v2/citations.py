@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from .models import Citation, RetrievalHit
+from .text import strip_thinking
 
 
 _CITATION = re.compile(r"\[(\d+)\]")
@@ -15,7 +16,8 @@ def build_citations(hits: list[RetrievalHit]) -> tuple[str, list[Citation]]:
         metadata = hit.document.metadata
         source = str(metadata.get("source", "未知来源"))
         title = str(metadata.get("title", ""))
-        excerpt = hit.document.text[:180].replace("\n", " ")
+        evidence = strip_thinking(hit.document.text)
+        excerpt = evidence[:180].replace("\n", " ")
         citations.append(
             Citation(
                 citation_id=number,
@@ -27,7 +29,7 @@ def build_citations(hits: list[RetrievalHit]) -> tuple[str, list[Citation]]:
         )
         context_parts.append(
             f"[{number}] source={source}; chunk_id={hit.document.document_id}\n"
-            f"{hit.document.text}"
+            f"{evidence}"
         )
     return "\n\n".join(context_parts), citations
 

@@ -86,13 +86,14 @@ def handle_request(
         )
 
 
-def build_ui(demo_only: bool = False) -> Any:
+def build_ui(demo_only: bool = False, default_real: bool = False) -> Any:
     try:
         import gradio as gr
     except ImportError as exc:
         raise RuntimeError("Web UI 需要可选依赖：pip install -e '.[ui]'") from exc
 
     modes = [DEMO_MODE] if demo_only else [DEMO_MODE, REAL_MODE]
+    default_mode = REAL_MODE if default_real and not demo_only else DEMO_MODE
     with gr.Blocks(
         title="Qwen3 LangChain Agentic RAG v2",
         theme=gr.themes.Soft(),
@@ -110,7 +111,7 @@ def build_ui(demo_only: bool = False) -> Any:
                     lines=3,
                     placeholder="例如：请问血压记录可以包含哪些内容？",
                 )
-                mode = gr.Radio(modes, value=DEMO_MODE, label="运行模式")
+                mode = gr.Radio(modes, value=default_mode, label="运行模式")
                 metadata_filter = gr.Textbox(
                     label="Metadata Filter（JSON）",
                     value="{}",
@@ -138,11 +139,11 @@ def build_ui(demo_only: bool = False) -> Any:
 
         gr.Examples(
             examples=[
-                ["请问血压记录可以包含哪些内容？", DEMO_MODE, "{}"],
-                ["血糖随访时可以记录什么？", DEMO_MODE, '{"department":"内分泌科"}'],
-                ["如何记录呼吸道症状便于就诊沟通？", DEMO_MODE, "{}"],
-                ["这个系统怎样融合检索并提供引用？", DEMO_MODE, '{"department":"工程"}'],
-                ["火箭发动机的推力是多少？", DEMO_MODE, "{}"],
+                ["高血压患者如何管理血压？", default_mode, "{}"],
+                ["糖尿病患者如何进行日常血糖管理？", default_mode, "{}"],
+                ["出现呼吸道症状时应记录哪些信息？", default_mode, "{}"],
+                ["高血压患者用药需要注意什么？", default_mode, "{}"],
+                ["火箭发动机的推力是多少？", default_mode, "{}"],
             ],
             inputs=[question, mode, metadata_filter],
             label="示例问题",
@@ -163,6 +164,7 @@ def build_ui(demo_only: bool = False) -> Any:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Qwen3 Agentic RAG v2 Web UI")
     parser.add_argument("--demo-only", action="store_true", help="隐藏真实模型模式")
+    parser.add_argument("--default-real", action="store_true", help="默认选择真实模型模式")
     parser.add_argument(
         "--host",
         default=os.getenv("GRADIO_SERVER_NAME", "127.0.0.1"),
@@ -178,7 +180,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = build_parser().parse_args()
-    build_ui(demo_only=args.demo_only).queue(default_concurrency_limit=1).launch(
+    build_ui(demo_only=args.demo_only, default_real=args.default_real).queue(
+        default_concurrency_limit=1
+    ).launch(
         server_name=args.host,
         server_port=args.port,
         share=args.share,

@@ -9,12 +9,13 @@ from rag_v2.compression import ExtractiveContextCompressor
 from rag_v2.config import RAGConfig
 from rag_v2.embeddings import HashingEmbedder
 from rag_v2.evaluation import faithfulness_score, recall_at_k
-from rag_v2.generation import ExtractiveGenerator
+from rag_v2.generation import ExtractiveGenerator, LangChainGroundedGenerator
 from rag_v2.models import RetrievalHit, SourceDocument
 from rag_v2.query_rewrite import QueryPlan, RuleBasedRewriter
 from rag_v2.reranker import TokenOverlapReranker
 from rag_v2.retrieval import HybridRetriever, InMemoryDenseIndex
 from rag_v2.semantic_chunking import SemanticChunker
+from rag_v2.text import strip_thinking
 
 
 class FixedEmbedder:
@@ -49,6 +50,12 @@ class RetryRetriever:
         del filters
         self.queries.append(query)
         return [self.hit] if query == "高血压治疗" else []
+
+
+class ThinkingLLM:
+    def invoke(self, prompt: str) -> str:
+        del prompt
+        return "<think>内部推理不应公开。</think>需要监测血压。[1]"
 
 
 class RAGV2Tests(unittest.TestCase):
@@ -142,6 +149,23 @@ class RAGV2Tests(unittest.TestCase):
         hallucinated = faithfulness_score("火箭需要液氧燃料。[1]", ["高血压需要监测血压。"])
         self.assertEqual(1.0, grounded)
         self.assertEqual(0.0, hallucinated)
+
+    def test_thinking_is_removed_from_generation_and_evidence(self) -> None:
+        self.assertEqual("最终答案", strip_thinking("<think>隐私推理</think>最终答案"))
+        generator = LangChainGroundedGenerator(ThinkingLLM())
+        answer = generator.generate("问题", "[1] 证据")
+        self.assertEqual("需要监测血压。[1]", answer)
+
+        hit = RetrievalHit(
+            SourceDocument(
+                "thinking-source",
+                "问题：如何管理？\n答案：<think>隐藏分析</think>遵医嘱。",
+                {"source": "docs.txt"},
+            )
+        )
+        context, citations = build_citations([hit])
+        self.assertNotIn("隐藏分析", context)
+        self.assertNotIn("<think>", citations[0].excerpt)
 
 
 if __name__ == "__main__":

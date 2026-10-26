@@ -5,6 +5,8 @@ import re
 from dataclasses import dataclass
 from typing import Any, Protocol
 
+from .text import strip_thinking
+
 
 ALLOWED_FILTERS = {
     "source",
@@ -73,7 +75,8 @@ class LLMQueryRewriter:
 
     @staticmethod
     def _text(response: Any) -> str:
-        return response.content if hasattr(response, "content") else str(response)
+        text = response.content if hasattr(response, "content") else str(response)
+        return strip_thinking(text)
 
     @staticmethod
     def _json_object(text: str) -> dict[str, Any]:

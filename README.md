@@ -44,6 +44,31 @@ docker run --rm -p 7860:7860 qwen3-agentic-rag-demo
 
 演示模式会显著标记 `DEMO / SYNTHETIC`，其内容不代表真实医疗知识库输出。
 
+### 使用真实训练模型启动前端
+
+真实模式需要完整 Hugging Face 格式的训练检查点、医疗语料、BGE Embedding
+和 CrossEncoder Reranker。通过环境变量指定路径后启动：
+
+```bash
+export QWEN_MODEL_PATH=/path/to/checkpoint
+export RAG_DOCS_PATH=/path/to/docs.txt
+export RAG_INDEX_DIR=/path/to/rag_v2_index
+export RAG_EMBEDDING_MODEL=/path/to/bge-small-zh-v1.5
+export RAG_RERANKER_MODEL=/path/to/bge-reranker-base
+
+python -m rag_v2.webapp --default-real
+```
+
+`--default-real` 会让页面默认选中真实模型模式。服务默认只监听
+`127.0.0.1:7860`；远程服务器建议通过 SSH 隧道访问，不要直接暴露医疗语料接口：
+
+```bash
+ssh -N -L 17860:127.0.0.1:7860 user@server
+```
+
+然后访问 `http://127.0.0.1:17860`。首次运行会执行 Semantic Chunking 并构建
+Chroma 索引；后续启动会复用 `RAG_INDEX_DIR`。
+
 ## 本版只做的 9 项升级
 
 | # | 原版 | 新版实现 |

@@ -6,7 +6,7 @@ from typing import Any
 
 from .embeddings import Embedder
 from .models import SourceDocument
-from .text import cosine, percentile, split_sentences, stable_id
+from .text import cosine, percentile, split_sentences, stable_id, strip_thinking
 
 
 def load_source_documents(path: str | Path) -> list[SourceDocument]:
@@ -35,6 +35,9 @@ def load_source_documents(path: str | Path) -> list[SourceDocument]:
     documents: list[SourceDocument] = []
     seen: set[str] = set()
     for line_number, text in records:
+        text = strip_thinking(text)
+        if not text:
+            continue
         if text in seen:
             continue
         seen.add(text)

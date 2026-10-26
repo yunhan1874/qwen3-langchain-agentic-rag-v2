@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Protocol
 
+from .text import strip_thinking
+
 
 class AnswerGenerator(Protocol):
     def generate(self, query: str, context: str) -> str: ...
@@ -25,7 +27,7 @@ class LangChainGroundedGenerator:
 
 问题：{query}
 回答："""
-        return self._text(self.llm.invoke(prompt)).strip()
+        return strip_thinking(self._text(self.llm.invoke(prompt)))
 
 
 class ExtractiveGenerator:
