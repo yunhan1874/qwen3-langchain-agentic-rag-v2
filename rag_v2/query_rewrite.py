@@ -98,13 +98,16 @@ class LLMQueryRewriter:
 """
         try:
             payload = self._json_object(self._text(self.llm.invoke(prompt)))
-            rewritten = str(payload.get("query", "")).strip() or query.strip()
+            rewritten = payload.get("query")
+            if not isinstance(rewritten, str) or not rewritten.strip():
+                raise ValueError("query rewrite returned an empty or non-string query")
+            rewritten = rewritten.strip()
             inferred = {
                 key: value
                 for key, value in dict(payload.get("filters") or {}).items()
                 if key in ALLOWED_FILTERS
             }
-        except (ValueError, TypeError, json.JSONDecodeError):
+        except (ValueError, TypeError):
             return self.fallback.rewrite(query, explicit_filters)
         merged = {**inferred, **(explicit_filters or {})}
         return QueryPlan(query.strip(), rewritten, merged)

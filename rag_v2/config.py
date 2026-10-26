@@ -33,6 +33,12 @@ class RAGConfig:
     )
     collection_name: str = "qwen3_medical_semantic_chunks"
     max_length: int = 2048
+    rewrite_max_new_tokens: int = field(
+        default_factory=lambda: int(os.getenv("RAG_REWRITE_MAX_NEW_TOKENS", "96"))
+    )
+    answer_max_new_tokens: int = field(
+        default_factory=lambda: int(os.getenv("RAG_ANSWER_MAX_NEW_TOKENS", "256"))
+    )
 
     semantic_breakpoint_percentile: float = 25.0
     min_chunk_chars: int = 120
@@ -53,6 +59,8 @@ class RAGConfig:
     def validate(self) -> None:
         positive = {
             "max_length": self.max_length,
+            "rewrite_max_new_tokens": self.rewrite_max_new_tokens,
+            "answer_max_new_tokens": self.answer_max_new_tokens,
             "min_chunk_chars": self.min_chunk_chars,
             "max_chunk_chars": self.max_chunk_chars,
             "dense_k": self.dense_k,

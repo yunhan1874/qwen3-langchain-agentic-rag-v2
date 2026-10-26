@@ -55,12 +55,15 @@ class AgenticRAGEngine:
             "steps": ["prepare_request"],
         }
 
-    def rewrite(self, state: AgentState) -> AgentState:
-        plan = self.rewriter.rewrite(state["original_query"], state["explicit_filters"])
+    def plan_query(self, state: AgentState) -> AgentState:
+        # The first retrieval uses the original question; no LLM call is needed here.
+        plan = QueryPlan(
+            state["original_query"], state["original_query"], state["explicit_filters"]
+        )
         return {
             **state,
             "plan": plan,
-            "steps": [*state["steps"], f"rewrite_query:{plan.rewritten_query}"],
+            "steps": [*state["steps"], "query_plan:direct_retrieval"],
         }
 
     def agentic_retrieve(self, state: AgentState) -> AgentState:
@@ -68,6 +71,7 @@ class AgenticRAGEngine:
         query = plan.rewritten_query
         best_hits: list[RetrievalHit] = []
         best_score = 0.0
+        best_plan = plan
         steps = list(state["steps"])
         seen_queries: set[str] = set()
 
@@ -83,13 +87,29 @@ class AgenticRAGEngine:
                 f"retrieve_attempt:{attempt + 1};hits={len(reranked)};top_score={score:.4f}"
             )
             if score > best_score:
-                best_hits, best_score = reranked, score
+                best_hits, best_score, best_plan = reranked, score, plan
             if reranked and score >= self.config.min_relevance_score:
                 steps.append("agent_stop:evidence_sufficient")
                 break
+            if attempt + 1 >= self.config.max_agent_steps:
+                steps.append("agent_stop:max_attempts")
+                break
             feedback = "没有候选" if not reranked else f"最高相关度仅 {score:.4f}"
-            query = self.rewriter.retry_query(plan, attempt + 1, feedback)
-            steps.append(f"agent_action:retry_query:{query}")
+            if attempt == 0:
+                rewritten = self.rewriter.rewrite(
+                    state["original_query"], state["explicit_filters"]
+                )
+                plan = QueryPlan(
+                    state["original_query"],
+                    rewritten.rewritten_query,
+                    {**rewritten.filters, **state["explicit_filters"]},
+                )
+                steps.append(f"agent_action:rewrite_query:{plan.rewritten_query}")
+            else:
+                query = self.rewriter.retry_query(plan, attempt + 1, feedback)
+                plan = QueryPlan(plan.original_query, query, plan.filters)
+                steps.append(f"agent_action:retry_query:{query}")
+            query = plan.rewritten_query
 
         accepted = [
             hit for hit in best_hits if hit.rerank_score >= self.config.min_relevance_score
@@ -97,6 +117,7 @@ class AgenticRAGEngine:
         status = "evidence_ready" if accepted else "abstained"
         return {
             **state,
+            "plan": best_plan if best_hits else plan,
             "hits": accepted,
             "debug_hits": best_hits,
             "status": status,
@@ -187,7 +208,7 @@ class AgenticRAGEngine:
     def run(self, query: str, filters: dict[str, Any] | None = None) -> RAGAnswer:
         """Dependency-free path used by tests; production calls the LCEL wrapper below."""
         state = self.prepare({"query": query, "filters": filters or {}})
-        state = self.rewrite(state)
+        state = self.plan_query(state)
         state = self.agentic_retrieve(state)
         state = self.compress(state)
         return self.generate(state)["result"]
@@ -204,7 +225,7 @@ class LangChainAgenticRAG:
         self.engine = engine
         self.chain = (
             RunnableLambda(engine.prepare, name="prepare_request")
-            | RunnableLambda(engine.rewrite, name="query_rewrite")
+            | RunnableLambda(engine.plan_query, name="prepare_query")
             | RunnableLambda(engine.agentic_retrieve, name="agentic_hybrid_retrieval")
             | RunnableLambda(engine.compress, name="context_compression")
             | RunnableLambda(engine.generate, name="cited_grounded_generation")

@@ -46,7 +46,7 @@ class LangChainLCELTests(unittest.TestCase):
         answer = rag.invoke("请问高血压如何管理？", {"document_type": "medical_qa"})
         mermaid = rag.chain.get_graph().draw_mermaid()
         self.assertEqual("answered", answer.status)
-        self.assertIn("query_rewrite", mermaid)
+        self.assertIn("prepare_query", mermaid)
         self.assertIn("agentic_hybrid_retrieval", mermaid)
         self.assertIn("cited_grounded_generation", mermaid)
 

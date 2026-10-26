@@ -76,7 +76,7 @@ Chroma 索引；后续启动会复用 `RAG_INDEX_DIR`。
 | 1 | 每行作为固定块 | 相邻句向量相似度断点的 Semantic Chunking，并保留最小/最大长度边界 |
 | 2 | Chroma Dense 单路 | BM25 + Chroma Dense，使用 RRF 融合名次 |
 | 3 | Top-K 直接进入 LLM | `BAAI/bge-reranker-base` CrossEncoder 重排后只取最终证据 |
-| 4 | 原始 Query | Qwen 生成结构化 Query Rewrite；失败时有确定性降级 |
+| 4 | 原始 Query | 先直接检索；低分时由 Qwen 生成结构化 Query Rewrite，失败时规则降级 |
 | 5 | 无 Metadata | chunk 写入 source、line、parent、position、type 等 metadata；两路检索共同过滤 |
 | 6 | 无压缩 | 按查询相关句做 extractive context compression，并执行总字符预算 |
 | 7 | 无引用约束 | 上下文编号、答案内 `[n]` 引用、结构化 `Citation` 与来源清单 |
@@ -92,7 +92,7 @@ docs.txt
 -> Chroma Dense index + BM25 index + Metadata
 
 用户 Query
--> Query Rewrite（query + filters）
+-> 原始问题 + 显式 Metadata Filter（首轮不调用 LLM 改写）
 -> Agent 第 1 次 Hybrid Retrieval
    -> Dense candidates
    -> BM25 candidates
@@ -100,7 +100,7 @@ docs.txt
 -> CrossEncoder Reranker
 -> Agent 检查证据分数
    -> 足够：停止检索
-   -> 不足：改写查询并再次检索（最多 3 步）
+   -> 不足：Qwen 生成 query + filters，再次检索（总计最多 3 轮）
    -> 仍不足：拒答
 -> Context Compression
 -> Qwen grounded generation
@@ -111,7 +111,7 @@ docs.txt
 
 ```text
 prepare_request
-| query_rewrite
+| prepare_query（保留原始查询与显式过滤条件）
 | agentic_hybrid_retrieval
 | context_compression
 | cited_grounded_generation
@@ -130,7 +130,19 @@ RAG 的九项升级保持原项目设计。公开展示版没有提交原始医�
 - `docs.py`：生成 RAG 语料
 - `train.py`：Qwen3 SFT
 
-为了安全发布，训练平台密钥和机器绝对路径已改为环境变量；最大长度仍为 2048，生成 temperature 仍为 0.1。`agent.py` 与 `agent_rag.py` 仍转到新版 RAG 入口。
+为了安全发布，训练平台密钥和机器绝对路径已改为环境变量。训练最大长度仍为 2048；推理采用独立生成预算：改写最多新增 96 token、回答最多新增 256 token，生成 temperature 仍为 0.1。两种调用共享同一个已加载模型。`agent.py` 与 `agent_rag.py` 仍转到新版 RAG 入口。
+
+### 延迟优化
+
+首轮证据充分时只调用一次 Qwen 生成回答。首轮低分才生成 JSON 改写；后续仍低分时可继续改写，总检索轮数最多 3 次。最后一轮失败后直接拒答；重复查询直接停止。改写 JSON 被 token 上限截断时使用规则降级。
+
+显式传入的 Metadata Filter 从第一轮开始生效，并优先于模型推断的同名字段。模型推断过滤条件仅在低分改写分支生成；如需确保首轮按科室、来源或年份过滤，请显式传入过滤条件。
+
+下面的脚本可对已启动页面连续计时，默认排除一个预热请求，并输出状态、引用数和中位耗时：
+
+```bash
+python scripts/benchmark_latency.py --url http://127.0.0.1:17860 --runs 3
+```
 
 ## 安装与运行
 
@@ -220,6 +232,8 @@ PYTHONPATH=. python3 -m unittest discover -s tests -v
 | `RAG_INDEX_DIR` | Chroma 与 Chunk 索引目录 | `./rag_v2_index` |
 | `RAG_EMBEDDING_MODEL` | Dense Embedding | `BAAI/bge-small-zh-v1.5` |
 | `RAG_RERANKER_MODEL` | CrossEncoder Reranker | `BAAI/bge-reranker-base` |
+| `RAG_REWRITE_MAX_NEW_TOKENS` | 改写最多新增 token | `96` |
+| `RAG_ANSWER_MAX_NEW_TOKENS` | 回答最多新增 token | `256` |
 | `SWANLAB_API_KEY` | 可选训练日志密钥 | 空 |
 | `GRADIO_SERVER_NAME` | Web UI 监听地址 | `127.0.0.1` |
 | `GRADIO_SERVER_PORT` | Web UI 端口 | `7860` |

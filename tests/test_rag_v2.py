@@ -139,7 +139,7 @@ class RAGV2Tests(unittest.TestCase):
         )
         answer = engine.run("请问怎么控制高血压")
         self.assertEqual("answered", answer.status)
-        self.assertEqual(["第一次无结果", "高血压治疗"], retriever.queries)
+        self.assertEqual(["请问怎么控制高血压", "第一次无结果", "高血压治疗"], retriever.queries)
         self.assertIn("[1]", answer.answer)
         self.assertTrue(any("retry_query" in step for step in answer.agent_steps))
 

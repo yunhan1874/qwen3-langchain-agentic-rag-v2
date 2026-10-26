@@ -36,7 +36,7 @@ def _build_llm(config: RAGConfig) -> Any:
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        max_length=config.max_length,
+        max_new_tokens=config.answer_max_new_tokens,
         temperature=0.1,
         return_full_text=False,
     )
@@ -81,7 +81,9 @@ def build_engine(config: RAGConfig, rebuild_index: bool = False) -> AgenticRAGEn
     return AgenticRAGEngine(
         retriever=retriever,
         reranker=CrossEncoderReranker(config.reranker_model),
-        rewriter=LLMQueryRewriter(llm),
+        rewriter=LLMQueryRewriter(
+            llm.bind(pipeline_kwargs={"max_new_tokens": config.rewrite_max_new_tokens})
+        ),
         compressor=ExtractiveContextCompressor(config.compression_max_chars),
         generator=LangChainGroundedGenerator(llm),
         config=config,
