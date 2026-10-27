@@ -146,6 +146,8 @@ python scripts/benchmark_latency.py --url http://127.0.0.1:17860 --runs 3
 
 真实训练模型的 vLLM 后端对比见 [vLLM 测试报告](docs/VLLM_BENCHMARK_RESULTS.md)。固定生成相同 128 token 的测试中，Transformers 中位耗时 3.84 秒，vLLM 为 0.76 秒。服务器展示前端已切换到 vLLM；新安装默认使用 Transformers，可通过环境变量选择后端。
 
+CUDA Graph、编译、Attention 后端、前缀缓存和并发的实测见 [vLLM 消融测试](docs/VLLM_ABLATION_RESULTS.md)，附复现脚本和逐次数据。本次短输入测试中关闭 CUDA Graph 后耗时由 0.765 秒增加到 2.331 秒；各项优化的收益不能直接相加。
+
 ### 使用 vLLM 后端
 
 在独立的 vLLM 环境启动已训练检查点，服务只监听 localhost：
