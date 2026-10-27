@@ -31,6 +31,7 @@ class Citation:
     source: str
     title: str
     excerpt: str
+    evidence: str = ""
 
 
 @dataclass(frozen=True)
@@ -57,11 +58,12 @@ class RAGAnswer:
     retrieved_ids: list[str]
     confidence: float
     retrieval_details: list[RetrievalDetail] = field(default_factory=list)
+    citation_status: str = "not_applicable"
 
     def render(self) -> str:
         if not self.citations:
             return self.answer
-        sources = ["", "来源："]
+        sources = ["", "检索证据（不代表逐句事实核验）："]
         for citation in self.citations:
             label = citation.title or citation.source
             sources.append(f"[{citation.citation_id}] {label} — {citation.excerpt}")

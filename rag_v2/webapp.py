@@ -60,12 +60,18 @@ def handle_request(
         )
         status = (
             f"**状态：** `{payload['status']}`  "
-            f"**置信度：** `{payload['confidence']:.4f}`  "
+            f"**检索相关度：** `{payload['confidence']:.4f}`  "
             f"**模式：** `{'DEMO / SYNTHETIC' if is_demo else 'REAL'}`"
         )
         if not is_demo:
             backend = "vLLM" if rag.engine.config.llm_backend == "vllm" else "Transformers"
             status += f"  **推理后端：** `{backend}`"
+        citation_label = {
+            "missing": "模型未生成引用",
+            "present_unverified": "模型已引用，事实支持待核验",
+            "not_applicable": "无回答引用",
+        }.get(payload["citation_status"], payload["citation_status"])
+        status += f"  **引用：** {citation_label}"
         return (
             payload["answer_markdown"],
             payload["citations"],

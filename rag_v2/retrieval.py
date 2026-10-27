@@ -32,44 +32,51 @@ class ChromaDenseIndex:
             raise RuntimeError("请先安装 chromadb") from exc
         self.embedder = embedder
         client = chromadb.PersistentClient(path=str(persist_directory))
-        if rebuild:
-            self._delete_if_present(client, collection_name)
         self.collection = client.get_or_create_collection(
             name=collection_name,
             configuration={"hnsw": {"space": "cosine"}},
         )
         existing_count = self.collection.count()
-        if existing_count not in {0, len(documents)}:
-            self._delete_if_present(client, collection_name)
+        if rebuild and existing_count:
+            client.delete_collection(collection_name)
             self.collection = client.create_collection(
                 name=collection_name,
                 configuration={"hnsw": {"space": "cosine"}},
             )
             existing_count = 0
+        if existing_count not in {0, len(documents)}:
+            raise RuntimeError("Chroma 内容与 chunks 不一致；请使用新的索引版本或显式重建")
         if existing_count == 0:
             self._add_documents(documents, batch_size)
+        else:
+            self._validate_documents(documents, batch_size)
         if self.collection.count() != len(documents):
             raise RuntimeError("Chroma 向量数量与 semantic chunks 数量不一致，请重建索引")
 
     @staticmethod
-    def _delete_if_present(client: Any, collection_name: str) -> None:
-        try:
-            client.delete_collection(collection_name)
-        except Exception:
-            pass
+    def _metadata(document: SourceDocument) -> dict[str, Any]:
+        return {
+            key: value for key, value in document.metadata.items()
+            if isinstance(value, (str, int, float, bool))
+        } or {"source": "unknown"}
+
+    def _validate_documents(self, documents: list[SourceDocument], batch_size: int) -> None:
+        for start in range(0, len(documents), batch_size):
+            batch = documents[start:start + batch_size]
+            stored = self.collection.get(ids=[d.document_id for d in batch], include=["documents", "metadatas"])
+            rows = {
+                key: (text, metadata) for key, text, metadata in zip(
+                    stored["ids"], stored["documents"], stored["metadatas"], strict=True
+                )
+            }
+            if any(rows.get(d.document_id) != (d.text, self._metadata(d)) for d in batch):
+                raise RuntimeError("Chroma ID、文本或元信息已变化；请使用新的索引版本或显式重建")
 
     def _add_documents(self, documents: list[SourceDocument], batch_size: int) -> None:
         for start in range(0, len(documents), batch_size):
             batch = documents[start : start + batch_size]
             vectors = self.embedder.embed_documents([document.text for document in batch])
-            metadatas = []
-            for document in batch:
-                metadata = {
-                    key: value
-                    for key, value in document.metadata.items()
-                    if isinstance(value, (str, int, float, bool))
-                }
-                metadatas.append(metadata or {"source": "unknown"})
+            metadatas = [self._metadata(document) for document in batch]
             self.collection.add(
                 ids=[document.document_id for document in batch],
                 documents=[document.text for document in batch],

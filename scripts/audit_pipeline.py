@@ -37,8 +37,10 @@ def median(values):
 
 def require_existing_index(config):
     """Refuse conditions where build_engine would add or recreate documents."""
-    chunks_path = config.index_dir / 'chunks.jsonl'
-    chroma_path = config.index_dir / 'chroma'
+    from rag_v2.index_cache import version_directory
+    directory = version_directory(config)
+    chunks_path = directory / 'chunks.jsonl'
+    chroma_path = directory / 'chroma'
     if not chunks_path.is_file() or not (chroma_path / 'chroma.sqlite3').is_file():
         raise RuntimeError('An existing complete index is required; audit never builds one')
     from rag_v2.semantic_chunking import load_chunks

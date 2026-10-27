@@ -126,6 +126,9 @@ class LatencyPathTests(unittest.TestCase):
 
         with (
             patch("rag_v2.cli._build_llm", return_value=hf_llm) as loader,
+            patch("rag_v2.cli.index_identity", return_value={}),
+            patch("rag_v2.cli.atomic_json"),
+            patch("rag_v2.cli.os.replace"),
             patch("rag_v2.cli.SentenceTransformerEmbedder"),
             patch("rag_v2.cli.load_source_documents", return_value=[]),
             patch("rag_v2.cli.SemanticChunker"),

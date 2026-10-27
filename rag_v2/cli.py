@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from .agent import AgenticRAGEngine, LangChainAgenticRAG
 from .compression import ExtractiveContextCompressor
@@ -12,6 +14,7 @@ from .config import RAGConfig
 from .embeddings import SentenceTransformerEmbedder
 from .evaluation import RAGEvaluator, load_evaluation_cases
 from .generation import LangChainGroundedGenerator
+from .index_cache import atomic_json, index_identity, manifest_matches, version_directory
 from .query_rewrite import LLMQueryRewriter
 from .reranker import CrossEncoderReranker
 from .retrieval import ChromaDenseIndex, HybridRetriever
@@ -57,9 +60,11 @@ def _build_llm(config: RAGConfig) -> Any:
 
 def build_engine(config: RAGConfig, rebuild_index: bool = False) -> AgenticRAGEngine:
     config.validate()
-    embedder = SentenceTransformerEmbedder(config.embedding_model)
-    chunks_path = config.index_dir / "chunks.jsonl"
-    if rebuild_index or not chunks_path.exists():
+    identity = index_identity(config)
+    directory = version_directory(config, identity)
+    embedder = SentenceTransformerEmbedder(config.embedding_model, revision=config.embedding_revision)
+    chunks_path = directory / "chunks.jsonl"
+    if rebuild_index or not chunks_path.exists() or not manifest_matches(directory, identity):
         print("执行 Semantic Chunking...")
         source_documents = load_source_documents(config.docs_path)
         chunker = SemanticChunker(
@@ -69,7 +74,12 @@ def build_engine(config: RAGConfig, rebuild_index: bool = False) -> AgenticRAGEn
             max_chunk_chars=config.max_chunk_chars,
         )
         chunks = chunker.split_documents(source_documents)
-        save_chunks(chunks, chunks_path)
+        temporary = chunks_path.with_name(f".chunks.{uuid4().hex}.tmp")
+        try:
+            save_chunks(chunks, temporary)
+            os.replace(temporary, chunks_path)
+        finally:
+            temporary.unlink(missing_ok=True)
     else:
         chunks = load_chunks(chunks_path)
 
@@ -77,10 +87,11 @@ def build_engine(config: RAGConfig, rebuild_index: bool = False) -> AgenticRAGEn
     dense_index = ChromaDenseIndex(
         chunks,
         embedder,
-        persist_directory=config.index_dir / "chroma",
+        persist_directory=directory / "chroma",
         collection_name=config.collection_name,
         rebuild=rebuild_index,
     )
+    atomic_json(directory / "manifest.json", identity)
     retriever = HybridRetriever(
         chunks,
         dense_index,

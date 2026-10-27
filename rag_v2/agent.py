@@ -5,7 +5,7 @@ from typing import Any
 
 from typing_extensions import TypedDict
 
-from .citations import build_citations, enforce_valid_citations
+from .citations import build_citations, enforce_valid_citations, has_valid_citation
 from .compression import ExtractiveContextCompressor
 from .config import RAGConfig
 from .generation import AnswerGenerator
@@ -74,6 +74,13 @@ class AgenticRAGEngine:
         best_plan = plan
         steps = list(state["steps"])
         seen_queries: set[str] = set()
+        matches = getattr(self.retriever, "has_matching_documents", None)
+        if state["explicit_filters"] and callable(matches) and matches(state["explicit_filters"]) is False:
+            return {
+                **state, "hits": [], "debug_hits": [], "status": "abstained",
+                "confidence": 0.0,
+                "steps": [*steps, "agent_stop:no_matching_explicit_filters"],
+            }
 
         for attempt in range(self.config.max_agent_steps):
             if not query or query in seen_queries:
@@ -192,16 +199,21 @@ class AgenticRAGEngine:
         context, citations = build_citations(state["compressed_hits"])
         answer = self.generator.generate(plan.original_query, context)
         answer = enforce_valid_citations(answer, citations)
+        citation_status = "present_unverified" if has_valid_citation(answer, citations) else "missing"
+        status = "answered" if answer.strip() else "generation_failed"
+        if not answer.strip():
+            answer = "模型未生成可展示的回答，请重新提问。"
         result = RAGAnswer(
             answer=answer,
             citations=citations,
             original_query=plan.original_query,
             rewritten_query=plan.rewritten_query,
-            status="answered",
+            status=status,
             agent_steps=[*state["steps"], "generate_grounded_answer"],
             retrieved_ids=[hit.document.document_id for hit in state["hits"]],
             confidence=state["confidence"],
             retrieval_details=retrieval_details,
+            citation_status=citation_status,
         )
         return {**state, "result": result}
 

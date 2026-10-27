@@ -79,8 +79,8 @@ Chroma 索引；后续启动会复用 `RAG_INDEX_DIR`。
 | 4 | 原始 Query | 先直接检索；低分时由 Qwen 生成结构化 Query Rewrite，失败时规则降级 |
 | 5 | 无 Metadata | chunk 写入 source、line、parent、position、type 等 metadata；两路检索共同过滤 |
 | 6 | 无压缩 | 按查询相关句做 extractive context compression，并执行总字符预算 |
-| 7 | 无引用约束 | 上下文编号、答案内 `[n]` 引用、结构化 `Citation` 与来源清单 |
-| 8 | 无评估 | JSONL 评估器输出 Recall@K 与 Faithfulness |
+| 7 | 无引用约束 | 上下文编号、合法引用编号检查、完整证据及引用缺失标记；不自动补编号 |
+| 8 | 无评估 | LCEL 评估器输出 Recall@K、词汇支持代理、句子精确匹配及拒答/引用率；语义 Faithfulness 未评估 |
 | 9 | 单次检索 | 有界 Agent 循环按召回结果决定停止、改写重试或拒答 |
 
 ## 新版逻辑
@@ -149,6 +149,8 @@ python scripts/benchmark_latency.py --url http://127.0.0.1:17860 --runs 3
 CUDA Graph、编译、Attention 后端、前缀缓存和并发的实测见 [vLLM 消融测试](docs/VLLM_ABLATION_RESULTS.md)，附复现脚本和逐次数据。本次短输入测试中关闭 CUDA Graph 后耗时由 0.765 秒增加到 2.331 秒；各项优化的收益不能直接相加。
 
 项目其余链路的测试见 [优化与可靠性审计](docs/PIPELINE_OPTIMIZATION_AUDIT.md)：包括 BM25 倒排、空过滤预检查、精排候选数、FP16、回答预算和 Qwen 提示词格式，同时记录 Citation、词汇 Faithfulness 代理及索引更新的反例。审计原型未修改正式配置。
+
+审计后的实现已加入 BM25 倒排、显式过滤空匹配预检查、按内容指纹分版本索引、引用状态和未闭合思考块清理；详见 [优化落地与复测](docs/OPTIMIZATION_RELEASE.md)。未启用 FP16、减少候选数或更改提示词格式。
 
 ### 使用 vLLM 后端
 
@@ -229,7 +231,7 @@ python agent_rag.py \
 {"query":"高血压如何治疗？","relevant_ids":["真实 chunk_id"],"filters":{"document_type":"medical_qa"}}
 ```
 
-`chunk_id` 可从首次建库生成的 `rag_v2_index/chunks.jsonl` 获取。运行：
+`chunk_id` 可从当前版本的 `rag_v2_index/versions/<指纹>/chunks.jsonl` 获取；相邻的 `manifest.json` 记录语料、Embedding 和切分配置。运行：
 
 ```bash
 python agent_rag.py --evaluate examples/eval_cases.jsonl --eval-k 3
@@ -238,11 +240,16 @@ python agent_rag.py --evaluate examples/eval_cases.jsonl --eval-k 3
 输出：
 
 ```json
-{"recall@3": 0.0, "faithfulness": 0.0, "case_count": 0}
+{"recall@3": 0.0, "faithfulness": null, "faithfulness_method": "not_evaluated", "lexical_support_proxy": 0.0, "exact_sentence_support": 0.0, "case_count": 0, "answered_count": 0, "abstention_rate": 0.0, "citation_rate": 0.0}
 ```
 
-- `Recall@K`：前 K 个重排结果覆盖相关 chunk 的比例。
-- `Faithfulness`：回答中的事实陈述有多少能由其引用上下文支持；当前实现是可离线复现的词项覆盖判据。
+- `Recall@K`：最终接受的前 K 个 chunk 覆盖相关 chunk 的比例。
+- `lexical_support_proxy`：词项覆盖代理，不能检测否定、剂量或语义蕴含。
+- `exact_sentence_support`：回答句子与完整证据句子的精确匹配比例；同义改写可能得零分，不代表语义事实支持。
+- `faithfulness`：未接入独立语义评估，明确返回 `null`。旧函数 `faithfulness_score` 仅是词汇代理的兼容别名。
+- `abstention_rate` 与 `citation_rate`：分别统计拒答率和可回答结果中含合法编号的比例；合法编号不等于事实正确。
+
+支持代理只对 `answered` 的结果计分，使用完整压缩证据；拒答和生成失败不计为高支持回答。评估入口与页面一样调用 LCEL。
 
 示例模板见 `examples/eval_cases.jsonl.example`，需先填入真实 chunk ID。
 
@@ -254,7 +261,7 @@ python agent_rag.py --evaluate examples/eval_cases.jsonl --eval-k 3
 PYTHONPATH=. python3 -m unittest discover -s tests -v
 ```
 
-它覆盖语义断点、多行记录还原、双路召回、Metadata Filtering、Reranker、严格压缩预算、引用校验、Agent 重试、Recall@K、Faithfulness 和展示模式。
+它覆盖语义断点、多行记录还原、倒排分数一致性、双路召回、过滤空匹配、Reranker、压缩预算、引用状态、Agent 重试、评估代理、思考块清理、版本缓存和展示模式。
 
 ## 配置
 
@@ -264,6 +271,7 @@ PYTHONPATH=. python3 -m unittest discover -s tests -v
 | `RAG_DOCS_PATH` | 真实模式语料文件 | `./data/docs.txt` |
 | `RAG_INDEX_DIR` | Chroma 与 Chunk 索引目录 | `./rag_v2_index` |
 | `RAG_EMBEDDING_MODEL` | Dense Embedding | `BAAI/bge-small-zh-v1.5` |
+| `RAG_EMBEDDING_REVISION` | 远程 Embedding 模型固定版本，部署建议指定 commit；本地模型会校验配置及权重文件指纹 | 空 |
 | `RAG_RERANKER_MODEL` | CrossEncoder Reranker | `BAAI/bge-reranker-base` |
 | `RAG_REWRITE_MAX_NEW_TOKENS` | 改写最多新增 token | `96` |
 | `RAG_ANSWER_MAX_NEW_TOKENS` | 回答最多新增 token | `256` |

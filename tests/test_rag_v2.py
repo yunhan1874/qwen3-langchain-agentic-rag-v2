@@ -123,7 +123,7 @@ class RAGV2Tests(unittest.TestCase):
         self.assertIn("[1]", context)
         answer = enforce_valid_citations("需要监测血压 [9]", citations)
         self.assertNotIn("[9]", answer)
-        self.assertTrue(answer.endswith("[1]"))
+        self.assertNotIn("[1]", answer)
 
     def test_agent_retries_then_generates_cited_answer(self) -> None:
         hit = RetrievalHit(self.documents[0], fusion_score=0.8)

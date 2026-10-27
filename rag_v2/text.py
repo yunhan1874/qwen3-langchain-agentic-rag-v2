@@ -9,7 +9,7 @@ from collections.abc import Iterable, Sequence
 _CJK = re.compile(r"[\u4e00-\u9fff]")
 _ALNUM = re.compile(r"[A-Za-z0-9][A-Za-z0-9._+-]*")
 _SENTENCE_BOUNDARY = re.compile(r"(?<=[。！？!?；;])\s*|\n+")
-_THINK_BLOCK = re.compile(r"<think>.*?</think>", flags=re.IGNORECASE | re.DOTALL)
+_THINK_BLOCK = re.compile(r"<think>.*?(?:</think>|\Z)", flags=re.IGNORECASE | re.DOTALL)
 _THINK_TAG = re.compile(r"</?think>", flags=re.IGNORECASE)
 
 
@@ -25,6 +25,10 @@ def split_sentences(text: str) -> list[str]:
 def strip_thinking(text: str) -> str:
     """Remove Qwen reasoning blocks and stray reasoning tags from public output/evidence."""
     without_blocks = _THINK_BLOCK.sub("", text)
+    # A generation can continue a prefilled think block without its opening tag.
+    closing = list(re.finditer(r"</think>", without_blocks, flags=re.IGNORECASE))
+    if closing:
+        without_blocks = without_blocks[closing[-1].end():]
     return _THINK_TAG.sub("", without_blocks).strip()
 
 

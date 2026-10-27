@@ -25,6 +25,7 @@ def build_citations(hits: list[RetrievalHit]) -> tuple[str, list[Citation]]:
                 source=source,
                 title=title,
                 excerpt=excerpt,
+                evidence=evidence,
             )
         )
         context_parts.append(
@@ -42,7 +43,9 @@ def enforce_valid_citations(answer: str, citations: list[Citation]) -> str:
         return match.group(0) if number in valid else ""
 
     cleaned = _CITATION.sub(replace, answer).strip()
-    used = {int(number) for number in _CITATION.findall(cleaned)}
-    if citations and not used:
-        cleaned = f"{cleaned} [{citations[0].citation_id}]".strip()
     return cleaned
+
+
+def has_valid_citation(answer: str, citations: list[Citation]) -> bool:
+    valid = {citation.citation_id for citation in citations}
+    return any(int(number) in valid for number in _CITATION.findall(answer))

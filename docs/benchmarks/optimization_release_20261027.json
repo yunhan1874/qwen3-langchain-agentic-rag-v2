@@ -1,0 +1,1044 @@
+{
+  "date": "2026-10-27",
+  "chunk_count": 2502,
+  "chunk_ids_equal": true,
+  "profiles": [
+    {
+      "case": "blood_pressure",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.9059793180786073,
+      "status": "answered",
+      "selected_ids": [
+        "2aa82cdcb4a55165faad",
+        "f4296d2ed5eca9dce836",
+        "81e4bfa5a860599dd515"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8272279109805822,
+          "limit": 256,
+          "prompt_sha256": "a72e55f323630ec5f36a0cff12643abd9f9bd9d2ff0c144b9fbb6f7630090ec3",
+          "output_sha256": "9063ddf8c97064291ada74cc80c64fa4b3b5e79c8a9dbd086cfc7d069dce689e",
+          "usage": {
+            "prompt_tokens": 693,
+            "total_tokens": 829,
+            "completion_tokens": 136,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "blood_pressure",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.8883972372859716,
+      "status": "answered",
+      "selected_ids": [
+        "2aa82cdcb4a55165faad",
+        "f4296d2ed5eca9dce836",
+        "81e4bfa5a860599dd515"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8289146679453552,
+          "limit": 256,
+          "prompt_sha256": "a72e55f323630ec5f36a0cff12643abd9f9bd9d2ff0c144b9fbb6f7630090ec3",
+          "output_sha256": "9063ddf8c97064291ada74cc80c64fa4b3b5e79c8a9dbd086cfc7d069dce689e",
+          "usage": {
+            "prompt_tokens": 693,
+            "total_tokens": 829,
+            "completion_tokens": 136,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "glucose",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.9263354321010411,
+      "status": "answered",
+      "selected_ids": [
+        "620c754f9cc558430bec",
+        "e31cd36b5bef970417cd",
+        "b494ac3f994e23d2c1f8"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8329917378723621,
+          "limit": 256,
+          "prompt_sha256": "60ff372f88c33920d45f53724b85fd8d55474e3b75e5fe43475ca1dd31790899",
+          "output_sha256": "29d30a59e16a355e544ff3d645e84dbc788c2f92df6a8311a91cb87e1bc1623c",
+          "usage": {
+            "prompt_tokens": 512,
+            "total_tokens": 650,
+            "completion_tokens": 138,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "glucose",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.8897151360288262,
+      "status": "answered",
+      "selected_ids": [
+        "620c754f9cc558430bec",
+        "e31cd36b5bef970417cd",
+        "b494ac3f994e23d2c1f8"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8311486397869885,
+          "limit": 256,
+          "prompt_sha256": "60ff372f88c33920d45f53724b85fd8d55474e3b75e5fe43475ca1dd31790899",
+          "output_sha256": "29d30a59e16a355e544ff3d645e84dbc788c2f92df6a8311a91cb87e1bc1623c",
+          "usage": {
+            "prompt_tokens": 512,
+            "total_tokens": 650,
+            "completion_tokens": 138,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "medication",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 1.6114466269500554,
+      "status": "answered",
+      "selected_ids": [
+        "d1d62793dea019e173cc",
+        "ac4c2dddd0805ad7abce",
+        "9bf90622aa2013c3d225"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 1.5224062115885317,
+          "limit": 256,
+          "prompt_sha256": "df4b92052fa674ecfc62bd7d7560f1ba1abb9bc800eea5b1c4c4c93811ddb23b",
+          "output_sha256": "523fa61c92393d8df85f916140f02b74cc2a3a3d389b6b9d8c9e5814fca42ba2",
+          "usage": {
+            "prompt_tokens": 601,
+            "total_tokens": 857,
+            "completion_tokens": 256,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "medication",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 1.5894222017377615,
+      "status": "answered",
+      "selected_ids": [
+        "d1d62793dea019e173cc",
+        "ac4c2dddd0805ad7abce",
+        "9bf90622aa2013c3d225"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 1.5239470917731524,
+          "limit": 256,
+          "prompt_sha256": "df4b92052fa674ecfc62bd7d7560f1ba1abb9bc800eea5b1c4c4c93811ddb23b",
+          "output_sha256": "523fa61c92393d8df85f916140f02b74cc2a3a3d389b6b9d8c9e5814fca42ba2",
+          "usage": {
+            "prompt_tokens": 601,
+            "total_tokens": 857,
+            "completion_tokens": 256,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "rocket",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.675809963606298,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.586109122261405,
+          "limit": 96,
+          "prompt_sha256": "01494dab0347da906404d5d414a60e34500087679217f2e8442ad700d9689f6c",
+          "output_sha256": "b966b05a2a9e4bae6fc5630b55153e934deb49c0261f9222e8067750be5886d6",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "rocket",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.6563414442352951,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5825269939377904,
+          "limit": 96,
+          "prompt_sha256": "01494dab0347da906404d5d414a60e34500087679217f2e8442ad700d9689f6c",
+          "output_sha256": "b966b05a2a9e4bae6fc5630b55153e934deb49c0261f9222e8067750be5886d6",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "not_applicable"
+    },
+    {
+      "case": "missing_filter",
+      "repeat": 1,
+      "variant": "baseline",
+      "seconds": 0.6064871312119067,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5835358882322907,
+          "limit": 96,
+          "prompt_sha256": "7b6f330e42ab1eee9ebc81c389d1961f0fb3909da384cdd94d129a14a81c6437",
+          "output_sha256": "fa1932e3049881692b636c54f84c8aa302499d7b68c66488f175440c564848d2",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "missing_filter",
+      "repeat": 1,
+      "variant": "optimized",
+      "seconds": 0.008558197412639856,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [],
+      "citation_status": "not_applicable"
+    },
+    {
+      "case": "blood_pressure",
+      "repeat": 2,
+      "variant": "optimized",
+      "seconds": 0.8733709859661758,
+      "status": "answered",
+      "selected_ids": [
+        "2aa82cdcb4a55165faad",
+        "f4296d2ed5eca9dce836",
+        "81e4bfa5a860599dd515"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8206965671852231,
+          "limit": 256,
+          "prompt_sha256": "a72e55f323630ec5f36a0cff12643abd9f9bd9d2ff0c144b9fbb6f7630090ec3",
+          "output_sha256": "9063ddf8c97064291ada74cc80c64fa4b3b5e79c8a9dbd086cfc7d069dce689e",
+          "usage": {
+            "prompt_tokens": 693,
+            "total_tokens": 829,
+            "completion_tokens": 136,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "blood_pressure",
+      "repeat": 2,
+      "variant": "baseline",
+      "seconds": 0.906461357139051,
+      "status": "answered",
+      "selected_ids": [
+        "2aa82cdcb4a55165faad",
+        "f4296d2ed5eca9dce836",
+        "81e4bfa5a860599dd515"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8257007738575339,
+          "limit": 256,
+          "prompt_sha256": "a72e55f323630ec5f36a0cff12643abd9f9bd9d2ff0c144b9fbb6f7630090ec3",
+          "output_sha256": "9063ddf8c97064291ada74cc80c64fa4b3b5e79c8a9dbd086cfc7d069dce689e",
+          "usage": {
+            "prompt_tokens": 693,
+            "total_tokens": 829,
+            "completion_tokens": 136,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "glucose",
+      "repeat": 2,
+      "variant": "optimized",
+      "seconds": 0.8839756287634373,
+      "status": "answered",
+      "selected_ids": [
+        "620c754f9cc558430bec",
+        "e31cd36b5bef970417cd",
+        "b494ac3f994e23d2c1f8"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8205614420585334,
+          "limit": 256,
+          "prompt_sha256": "60ff372f88c33920d45f53724b85fd8d55474e3b75e5fe43475ca1dd31790899",
+          "output_sha256": "29d30a59e16a355e544ff3d645e84dbc788c2f92df6a8311a91cb87e1bc1623c",
+          "usage": {
+            "prompt_tokens": 512,
+            "total_tokens": 650,
+            "completion_tokens": 138,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "glucose",
+      "repeat": 2,
+      "variant": "baseline",
+      "seconds": 0.9062670357525349,
+      "status": "answered",
+      "selected_ids": [
+        "620c754f9cc558430bec",
+        "e31cd36b5bef970417cd",
+        "b494ac3f994e23d2c1f8"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8197975126095116,
+          "limit": 256,
+          "prompt_sha256": "60ff372f88c33920d45f53724b85fd8d55474e3b75e5fe43475ca1dd31790899",
+          "output_sha256": "29d30a59e16a355e544ff3d645e84dbc788c2f92df6a8311a91cb87e1bc1623c",
+          "usage": {
+            "prompt_tokens": 512,
+            "total_tokens": 650,
+            "completion_tokens": 138,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "medication",
+      "repeat": 2,
+      "variant": "optimized",
+      "seconds": 1.5687035410664976,
+      "status": "answered",
+      "selected_ids": [
+        "d1d62793dea019e173cc",
+        "ac4c2dddd0805ad7abce",
+        "9bf90622aa2013c3d225"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 1.4974060161039233,
+          "limit": 256,
+          "prompt_sha256": "df4b92052fa674ecfc62bd7d7560f1ba1abb9bc800eea5b1c4c4c93811ddb23b",
+          "output_sha256": "523fa61c92393d8df85f916140f02b74cc2a3a3d389b6b9d8c9e5814fca42ba2",
+          "usage": {
+            "prompt_tokens": 601,
+            "total_tokens": 857,
+            "completion_tokens": 256,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "medication",
+      "repeat": 2,
+      "variant": "baseline",
+      "seconds": 1.59008281910792,
+      "status": "answered",
+      "selected_ids": [
+        "d1d62793dea019e173cc",
+        "ac4c2dddd0805ad7abce",
+        "9bf90622aa2013c3d225"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 1.5017762752249837,
+          "limit": 256,
+          "prompt_sha256": "df4b92052fa674ecfc62bd7d7560f1ba1abb9bc800eea5b1c4c4c93811ddb23b",
+          "output_sha256": "523fa61c92393d8df85f916140f02b74cc2a3a3d389b6b9d8c9e5814fca42ba2",
+          "usage": {
+            "prompt_tokens": 601,
+            "total_tokens": 857,
+            "completion_tokens": 256,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "rocket",
+      "repeat": 2,
+      "variant": "optimized",
+      "seconds": 0.662712805904448,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5807039318606257,
+          "limit": 96,
+          "prompt_sha256": "01494dab0347da906404d5d414a60e34500087679217f2e8442ad700d9689f6c",
+          "output_sha256": "b966b05a2a9e4bae6fc5630b55153e934deb49c0261f9222e8067750be5886d6",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "not_applicable"
+    },
+    {
+      "case": "rocket",
+      "repeat": 2,
+      "variant": "baseline",
+      "seconds": 0.6658065719529986,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5739767192862928,
+          "limit": 96,
+          "prompt_sha256": "01494dab0347da906404d5d414a60e34500087679217f2e8442ad700d9689f6c",
+          "output_sha256": "b966b05a2a9e4bae6fc5630b55153e934deb49c0261f9222e8067750be5886d6",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "missing_filter",
+      "repeat": 2,
+      "variant": "optimized",
+      "seconds": 0.008758111856877804,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [],
+      "citation_status": "not_applicable"
+    },
+    {
+      "case": "missing_filter",
+      "repeat": 2,
+      "variant": "baseline",
+      "seconds": 0.5908632283098996,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5750437509268522,
+          "limit": 96,
+          "prompt_sha256": "7b6f330e42ab1eee9ebc81c389d1961f0fb3909da384cdd94d129a14a81c6437",
+          "output_sha256": "fa1932e3049881692b636c54f84c8aa302499d7b68c66488f175440c564848d2",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "blood_pressure",
+      "repeat": 3,
+      "variant": "baseline",
+      "seconds": 0.9041717816144228,
+      "status": "answered",
+      "selected_ids": [
+        "2aa82cdcb4a55165faad",
+        "f4296d2ed5eca9dce836",
+        "81e4bfa5a860599dd515"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8196573369204998,
+          "limit": 256,
+          "prompt_sha256": "a72e55f323630ec5f36a0cff12643abd9f9bd9d2ff0c144b9fbb6f7630090ec3",
+          "output_sha256": "9063ddf8c97064291ada74cc80c64fa4b3b5e79c8a9dbd086cfc7d069dce689e",
+          "usage": {
+            "prompt_tokens": 693,
+            "total_tokens": 829,
+            "completion_tokens": 136,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "blood_pressure",
+      "repeat": 3,
+      "variant": "optimized",
+      "seconds": 0.8809268358163536,
+      "status": "answered",
+      "selected_ids": [
+        "2aa82cdcb4a55165faad",
+        "f4296d2ed5eca9dce836",
+        "81e4bfa5a860599dd515"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8185868090949953,
+          "limit": 256,
+          "prompt_sha256": "a72e55f323630ec5f36a0cff12643abd9f9bd9d2ff0c144b9fbb6f7630090ec3",
+          "output_sha256": "9063ddf8c97064291ada74cc80c64fa4b3b5e79c8a9dbd086cfc7d069dce689e",
+          "usage": {
+            "prompt_tokens": 693,
+            "total_tokens": 829,
+            "completion_tokens": 136,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "glucose",
+      "repeat": 3,
+      "variant": "baseline",
+      "seconds": 0.9085292033851147,
+      "status": "answered",
+      "selected_ids": [
+        "620c754f9cc558430bec",
+        "e31cd36b5bef970417cd",
+        "b494ac3f994e23d2c1f8"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8299829778261483,
+          "limit": 256,
+          "prompt_sha256": "60ff372f88c33920d45f53724b85fd8d55474e3b75e5fe43475ca1dd31790899",
+          "output_sha256": "29d30a59e16a355e544ff3d645e84dbc788c2f92df6a8311a91cb87e1bc1623c",
+          "usage": {
+            "prompt_tokens": 512,
+            "total_tokens": 650,
+            "completion_tokens": 138,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "glucose",
+      "repeat": 3,
+      "variant": "optimized",
+      "seconds": 0.8850033679045737,
+      "status": "answered",
+      "selected_ids": [
+        "620c754f9cc558430bec",
+        "e31cd36b5bef970417cd",
+        "b494ac3f994e23d2c1f8"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 0.8266963344067335,
+          "limit": 256,
+          "prompt_sha256": "60ff372f88c33920d45f53724b85fd8d55474e3b75e5fe43475ca1dd31790899",
+          "output_sha256": "29d30a59e16a355e544ff3d645e84dbc788c2f92df6a8311a91cb87e1bc1623c",
+          "usage": {
+            "prompt_tokens": 512,
+            "total_tokens": 650,
+            "completion_tokens": 138,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "medication",
+      "repeat": 3,
+      "variant": "baseline",
+      "seconds": 1.5822676341049373,
+      "status": "answered",
+      "selected_ids": [
+        "d1d62793dea019e173cc",
+        "ac4c2dddd0805ad7abce",
+        "9bf90622aa2013c3d225"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 1.5050802170298994,
+          "limit": 256,
+          "prompt_sha256": "df4b92052fa674ecfc62bd7d7560f1ba1abb9bc800eea5b1c4c4c93811ddb23b",
+          "output_sha256": "523fa61c92393d8df85f916140f02b74cc2a3a3d389b6b9d8c9e5814fca42ba2",
+          "usage": {
+            "prompt_tokens": 601,
+            "total_tokens": 857,
+            "completion_tokens": 256,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "medication",
+      "repeat": 3,
+      "variant": "optimized",
+      "seconds": 1.566827618982643,
+      "status": "answered",
+      "selected_ids": [
+        "d1d62793dea019e173cc",
+        "ac4c2dddd0805ad7abce",
+        "9bf90622aa2013c3d225"
+      ],
+      "llm_calls": [
+        {
+          "kind": "answer",
+          "seconds": 1.5111901899799705,
+          "limit": 256,
+          "prompt_sha256": "df4b92052fa674ecfc62bd7d7560f1ba1abb9bc800eea5b1c4c4c93811ddb23b",
+          "output_sha256": "523fa61c92393d8df85f916140f02b74cc2a3a3d389b6b9d8c9e5814fca42ba2",
+          "usage": {
+            "prompt_tokens": 601,
+            "total_tokens": 857,
+            "completion_tokens": 256,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "missing"
+    },
+    {
+      "case": "rocket",
+      "repeat": 3,
+      "variant": "baseline",
+      "seconds": 0.6732408320531249,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5819463590160012,
+          "limit": 96,
+          "prompt_sha256": "01494dab0347da906404d5d414a60e34500087679217f2e8442ad700d9689f6c",
+          "output_sha256": "b966b05a2a9e4bae6fc5630b55153e934deb49c0261f9222e8067750be5886d6",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "rocket",
+      "repeat": 3,
+      "variant": "optimized",
+      "seconds": 0.6441038600169122,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5737007930874825,
+          "limit": 96,
+          "prompt_sha256": "01494dab0347da906404d5d414a60e34500087679217f2e8442ad700d9689f6c",
+          "output_sha256": "b966b05a2a9e4bae6fc5630b55153e934deb49c0261f9222e8067750be5886d6",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "not_applicable"
+    },
+    {
+      "case": "missing_filter",
+      "repeat": 3,
+      "variant": "baseline",
+      "seconds": 0.6042663767002523,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [
+        {
+          "kind": "rewrite",
+          "seconds": 0.5801983643323183,
+          "limit": 96,
+          "prompt_sha256": "7b6f330e42ab1eee9ebc81c389d1961f0fb3909da384cdd94d129a14a81c6437",
+          "output_sha256": "fa1932e3049881692b636c54f84c8aa302499d7b68c66488f175440c564848d2",
+          "usage": {
+            "prompt_tokens": 102,
+            "total_tokens": 198,
+            "completion_tokens": 96,
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "length",
+          "native_citation_ids": []
+        }
+      ],
+      "citation_status": "legacy_auto_append"
+    },
+    {
+      "case": "missing_filter",
+      "repeat": 3,
+      "variant": "optimized",
+      "seconds": 0.01089833490550518,
+      "status": "abstained",
+      "selected_ids": [],
+      "llm_calls": [],
+      "citation_status": "not_applicable"
+    }
+  ],
+  "bm25": [
+    {
+      "case": "blood_pressure",
+      "seconds": {
+        "baseline": [
+          0.020342885050922632,
+          0.019779697060585022,
+          0.01962793432176113,
+          0.018470412120223045,
+          0.017683257814496756,
+          0.017939493060112,
+          0.017342964187264442,
+          0.017820097971707582,
+          0.017039251048117876,
+          0.019002989400178194
+        ],
+        "optimized": [
+          0.006588454823940992,
+          0.005318752024322748,
+          0.004952416755259037,
+          0.004679704084992409,
+          0.00448946375399828,
+          0.004582751076668501,
+          0.004450220614671707,
+          0.004707118961960077,
+          0.004413757007569075,
+          0.005838767159730196
+        ]
+      },
+      "exact_results_equal": true
+    },
+    {
+      "case": "glucose",
+      "seconds": {
+        "baseline": [
+          0.018065931741148233,
+          0.01777125895023346,
+          0.01841158326715231,
+          0.0170160923153162,
+          0.017036445904523134,
+          0.016693555284291506,
+          0.01656561717391014,
+          0.016615977976471186,
+          0.025481610093265772,
+          0.019756884314119816
+        ],
+        "optimized": [
+          0.004993021953850985,
+          0.0046355221420526505,
+          0.01887923339381814,
+          0.004409101791679859,
+          0.004444563761353493,
+          0.004322961438447237,
+          0.004378164187073708,
+          0.00439045112580061,
+          0.006832469254732132,
+          0.004363650921732187
+        ]
+      },
+      "exact_results_equal": true
+    },
+    {
+      "case": "medication",
+      "seconds": {
+        "baseline": [
+          0.018547422252595425,
+          0.01882586581632495,
+          0.01961337635293603,
+          0.01807257765904069,
+          0.017982573714107275,
+          0.018065106123685837,
+          0.018092236947268248,
+          0.018676496110856533,
+          0.01798012899234891,
+          0.018044978845864534
+        ],
+        "optimized": [
+          0.005620224867016077,
+          0.006532240193337202,
+          0.005482491105794907,
+          0.005278410855680704,
+          0.0052436948753893375,
+          0.005375451873987913,
+          0.005267725791782141,
+          0.005325709003955126,
+          0.00520095881074667,
+          0.005262037273496389
+        ]
+      },
+      "exact_results_equal": true
+    },
+    {
+      "case": "rocket",
+      "seconds": {
+        "baseline": [
+          0.014791232999414206,
+          0.01455710781738162,
+          0.014572801999747753,
+          0.01433869218453765,
+          0.014059972018003464,
+          0.01451151305809617,
+          0.014113718178123236,
+          0.014351618010550737,
+          0.01401137886568904,
+          0.020768221002072096
+        ],
+        "optimized": [
+          0.004796604160219431,
+          0.004568214062601328,
+          0.004461680073291063,
+          0.004404452163726091,
+          0.0043523311614990234,
+          0.00445619598031044,
+          0.004335701931267977,
+          0.0043906946666538715,
+          0.0043744491413235664,
+          0.004464519675821066
+        ]
+      },
+      "exact_results_equal": true
+    },
+    {
+      "case": "missing_filter",
+      "seconds": {
+        "baseline": [
+          0.0014501530677080154,
+          0.0014217281714081764,
+          0.0013194670900702477,
+          0.001329412218183279,
+          0.0013173571787774563,
+          0.0013178857043385506,
+          0.0014171060174703598,
+          0.0013756598345935345,
+          0.0013239821419119835,
+          0.0013959161005914211
+        ],
+        "optimized": [
+          0.001397913321852684,
+          0.0013368218205869198,
+          0.0013174721971154213,
+          0.0013180510140955448,
+          0.0013911989517509937,
+          0.001412112731486559,
+          0.0014067781157791615,
+          0.0014083520509302616,
+          0.0013659191317856312,
+          0.0013311533257365227
+        ]
+      },
+      "exact_results_equal": true
+    }
+  ],
+  "real_chroma_stale_index_rejected": true,
+  "old_synthetic_index_preserved": true,
+  "new_manifest_matches": true,
+  "old_index_retained": true,
+  "unclosed_thinking_removed": true,
+  "contradictions": [
+    {
+      "case": "negation",
+      "lexical_proxy": 1.0,
+      "exact_sentence_support": 0.0
+    },
+    {
+      "case": "dose",
+      "lexical_proxy": 1.0,
+      "exact_sentence_support": 0.0
+    }
+  ],
+  "notes": [
+    "Raw model answers and private prompts are excluded.",
+    "Citation postprocessing intentionally changes; raw answer hashes match.",
+    "No medical correctness or semantic entailment evaluation."
+  ],
+  "ui_samples": [
+    {
+      "case": "warmup",
+      "seconds": 12.726021898910403,
+      "citation_count": 3,
+      "status": "**状态：** `answered`  **检索相关度：** `0.9569`  **模式：** `REAL`  **推理后端：** `vLLM`  **引用：** 模型未生成引用",
+      "new_citation_status_visible": true,
+      "uses_vllm": true
+    },
+    {
+      "case": "answer",
+      "seconds": 0.7341512939892709,
+      "citation_count": 3,
+      "status": "**状态：** `answered`  **检索相关度：** `0.9569`  **模式：** `REAL`  **推理后端：** `vLLM`  **引用：** 模型未生成引用",
+      "new_citation_status_visible": true,
+      "uses_vllm": true
+    },
+    {
+      "case": "answer",
+      "seconds": 0.7290491526946425,
+      "citation_count": 3,
+      "status": "**状态：** `answered`  **检索相关度：** `0.9569`  **模式：** `REAL`  **推理后端：** `vLLM`  **引用：** 模型未生成引用",
+      "new_citation_status_visible": true,
+      "uses_vllm": true
+    },
+    {
+      "case": "answer",
+      "seconds": 1.179909722879529,
+      "citation_count": 3,
+      "status": "**状态：** `answered`  **检索相关度：** `0.9569`  **模式：** `REAL`  **推理后端：** `vLLM`  **引用：** 模型未生成引用",
+      "new_citation_status_visible": true,
+      "uses_vllm": true
+    },
+    {
+      "case": "missing_filter",
+      "seconds": 0.13187113776803017,
+      "citation_count": 0,
+      "status": "**状态：** `abstained`  **检索相关度：** `0.0000`  **模式：** `REAL`  **推理后端：** `vLLM`  **引用：** 无回答引用",
+      "new_citation_status_visible": true,
+      "uses_vllm": true
+    },
+    {
+      "case": "missing_filter",
+      "seconds": 0.0781950238160789,
+      "citation_count": 0,
+      "status": "**状态：** `abstained`  **检索相关度：** `0.0000`  **模式：** `REAL`  **推理后端：** `vLLM`  **引用：** 无回答引用",
+      "new_citation_status_visible": true,
+      "uses_vllm": true
+    },
+    {
+      "case": "missing_filter",
+      "seconds": 0.1268360810354352,
+      "citation_count": 0,
+      "status": "**状态：** `abstained`  **检索相关度：** `0.0000`  **模式：** `REAL`  **推理后端：** `vLLM`  **引用：** 无回答引用",
+      "new_citation_status_visible": true,
+      "uses_vllm": true
+    }
+  ],
+  "unit_tests_passed": 43
+}

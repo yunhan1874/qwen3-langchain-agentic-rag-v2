@@ -36,12 +36,12 @@ class HashingEmbedder:
 
 
 class SentenceTransformerEmbedder:
-    def __init__(self, model_name: str) -> None:
+    def __init__(self, model_name: str, revision: str | None = None) -> None:
         try:
             from sentence_transformers import SentenceTransformer
         except ImportError as exc:
             raise RuntimeError("请先安装 sentence-transformers") from exc
-        self.model = SentenceTransformer(model_name)
+        self.model = SentenceTransformer(model_name, revision=revision)
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         vectors = self.model.encode(texts, normalize_embeddings=True, show_progress_bar=False)

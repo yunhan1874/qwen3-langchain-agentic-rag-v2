@@ -178,6 +178,7 @@ def result_payload(result: RAGAnswer, demo_mode: bool) -> dict[str, Any]:
         "agent_steps": result.agent_steps,
         "status": result.status,
         "confidence": round(result.confidence, 4),
+        "citation_status": result.citation_status,
         "scores": scores,
     }
 

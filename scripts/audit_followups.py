@@ -32,12 +32,20 @@ def stale_index_probe():
             return len(self.ids)
         def add(self, ids, **kwargs):
             self.ids.extend(ids)
+        def get(self, ids, include):
+            found = [key for key in ids if key in self.ids]
+            return {'ids': found, 'documents': ['旧证据'] * len(found),
+                    'metadatas': [{'source': 'unknown'}] * len(found)}
     collection = Collection()
     client = types.SimpleNamespace(get_or_create_collection=lambda **kwargs: collection)
     fake = types.SimpleNamespace(PersistentClient=lambda **kwargs: client)
     with patch.dict(sys.modules, {'chromadb': fake}):
         ChromaDenseIndex([SourceDocument('old', '旧证据')], HashingEmbedder(), 'unused', 'test')
-        ChromaDenseIndex([SourceDocument('new', '新证据')], HashingEmbedder(), 'unused', 'test')
+        try:
+            ChromaDenseIndex([SourceDocument('new', '新证据')], HashingEmbedder(), 'unused', 'test')
+        except RuntimeError:
+            return {'kind': 'mock_constructor_same_count_changed_ids',
+                    'stale_index_detected': True, 'old_index_preserved': collection.ids == ['old']}
     return {'kind': 'mock_constructor_same_count_changed_ids',
             'expected_current_ids': ['new'], 'actual_ids': collection.ids,
             'stale_index_reproduced': collection.ids != ['new']}

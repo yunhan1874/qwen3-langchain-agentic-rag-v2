@@ -40,6 +40,14 @@ class BM25Index:
             term: math.log(1 + (total - frequency + 0.5) / (frequency + 0.5))
             for term, frequency in document_frequency.items()
         }
+        self.postings: dict[str, list[tuple[int, float]]] = defaultdict(list)
+        for index, frequencies in enumerate(self.term_frequencies):
+            for term, frequency in frequencies.items():
+                denominator = frequency + self.k1 * (
+                    1 - self.b + self.b * self.lengths[index] / (self.average_length or 1)
+                )
+                contribution = self.idf[term] * frequency * (self.k1 + 1) / denominator
+                self.postings[term].append((index, contribution))
 
     def search(
         self,
@@ -47,24 +55,24 @@ class BM25Index:
         k: int,
         filters: dict[str, Any] | None = None,
     ) -> list[tuple[str, float]]:
-        query_terms = tokenize(query)
-        scored: list[tuple[str, float]] = []
-        for index, document in enumerate(self.documents):
-            if not metadata_matches(document.metadata, filters):
-                continue
-            score = 0.0
-            length = self.lengths[index]
-            frequencies = self.term_frequencies[index]
-            for term in query_terms:
-                frequency = frequencies.get(term, 0)
-                if not frequency:
-                    continue
-                denominator = frequency + self.k1 * (
-                    1 - self.b + self.b * length / (self.average_length or 1)
-                )
-                score += self.idf.get(term, 0.0) * frequency * (self.k1 + 1) / denominator
-            if score > 0:
-                scored.append((document.document_id, score))
+        allowed = None
+        if filters:
+            allowed = {
+                index for index, document in enumerate(self.documents)
+                if metadata_matches(document.metadata, filters)
+            }
+            if not allowed:
+                return []
+        scores: dict[int, float] = defaultdict(float)
+        # Preserve repeated query terms and their original accumulation order.
+        for term in tokenize(query):
+            for index, contribution in self.postings.get(term, ()):
+                if allowed is None or index in allowed:
+                    scores[index] += contribution
+        scored = [
+            (self.documents[index].document_id, score)
+            for index, score in scores.items() if score > 0
+        ]
         scored.sort(key=lambda item: (-item[1], item[0]))
         return scored[:k]
 
@@ -199,6 +207,9 @@ class HybridRetriever:
         self.bm25_k = bm25_k
         self.fused_k = fused_k
         self.rrf_constant = rrf_constant
+
+    def has_matching_documents(self, filters: dict[str, Any]) -> bool:
+        return any(metadata_matches(document.metadata, filters) for document in self.documents.values())
 
     def retrieve(
         self,

@@ -40,6 +40,9 @@ class RAGConfig:
     embedding_model: str = field(
         default_factory=lambda: os.getenv("RAG_EMBEDDING_MODEL", "BAAI/bge-small-zh-v1.5")
     )
+    embedding_revision: str | None = field(
+        default_factory=lambda: os.getenv("RAG_EMBEDDING_REVISION") or None
+    )
     reranker_model: str = field(
         default_factory=lambda: os.getenv("RAG_RERANKER_MODEL", "BAAI/bge-reranker-base")
     )
