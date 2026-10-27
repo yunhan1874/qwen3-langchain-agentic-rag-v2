@@ -148,6 +148,8 @@ python scripts/benchmark_latency.py --url http://127.0.0.1:17860 --runs 3
 
 CUDA Graph、编译、Attention 后端、前缀缓存和并发的实测见 [vLLM 消融测试](docs/VLLM_ABLATION_RESULTS.md)，附复现脚本和逐次数据。本次短输入测试中关闭 CUDA Graph 后耗时由 0.765 秒增加到 2.331 秒；各项优化的收益不能直接相加。
 
+项目其余链路的测试见 [优化与可靠性审计](docs/PIPELINE_OPTIMIZATION_AUDIT.md)：包括 BM25 倒排、空过滤预检查、精排候选数、FP16、回答预算和 Qwen 提示词格式，同时记录 Citation、词汇 Faithfulness 代理及索引更新的反例。审计原型未修改正式配置。
+
 ### 使用 vLLM 后端
 
 在独立的 vLLM 环境启动已训练检查点，服务只监听 localhost：
